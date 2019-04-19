@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="js/jquery.js"></script>
+    <style>
+        #add{
+            background:rgb(214, 212, 209);
+            width:350px;
+        }
+    </style>
+</head>
+<body>
+    
+        <p id="add">您购买的数量:0 , 您购买的总价为:0</p>
+    <script>
+        
+        $.ajax({
+            url:'http://192.168.5.49:3000/list',
+            type:'get',
+            dataType:'jsonp',
+            success:function(res){
+                lists=res.result.list
+                console.log(lists);
+                for(let i = 0; i<lists.length; i++){
+                    buju(i)
+                }
+            },
+            error:function(result){
+
+            }
+        })
+
+        function buju(i){
+            //创建元素
+            odiv=$('<div>')
+            oh1=$('<h1>')
+            oimg=$('<img>')
+            oh2=$('<h2>')
+            ocanter=$('<canter>')
+            obutton_ran=$('<button>')
+            oinput=$('<input>')
+            obutton_can=$('<button>')
+            //oinput添加id
+            oinput.attr('id','shuru'+i)
+            //为动态添加元素
+            odiv.css('float','left')
+            let flag = false
+            odiv.click(function(){
+            flag = !flag
+                $(this).css('background',flag?'red':'white')
+            })
+            $('body').css('width','900px')
+            oh1.text(lists[i].productName)
+            oh1.css('text-align','center').css('width','220px')
+            oimg.attr('src','http://192.168.5.49:3000/images/'+lists[i].productImage)
+            oimg.css('width','200px')
+            oh2.text('￥'+lists[i].salePrice+'.00')
+            oh2.css('text-align','center').css('width','220px')
+            let value = 0
+            obutton_can.text('+')
+            obutton_can.click(function(e){
+                if($('#shuru'+i).val()>=1){
+                    e.stopPropagation()
+                }
+                value++
+                $('#shuru'+i).val(value)
+                lists[i].count=value
+                heji()
+            })
+            oinput.val(value)
+            obutton_ran.text('-')
+            obutton_ran.click(function(e){
+                e.stopPropagation()
+                value--
+                if(value<=0){
+                    value=0
+                    $(this).parent().parent().css('background','white')
+                }
+                $('#shuru'+i).val(value)
+                lists[i].count=value
+                heji()
+            })
+            oinput.val('0')
+            //把动态添加到div在添加到body
+            odiv.append(oh1)
+            odiv.append(oimg)
+            odiv.append(oh2)
+            odiv.append(ocanter)
+            ocanter.append(obutton_can)
+            ocanter.append(oinput)
+            ocanter.append(obutton_ran)
+            $('body').append(odiv)
+        }
+
+
+        function heji(){
+            var count = 0
+            var sum = 0
+            var items=lists.map(function(item){
+                if(item.count){
+                    return item.count
+                }else{
+                    return 0
+                }
+            })
+            //console.log(items);
+            count=items.reduce(function(a,b){
+                return a+b
+            })
+            var itemsl=lists.map(function(item){
+            if(item.count){
+                return item.count*item.salePrice
+            }else{
+                return 0
+                }
+            })
+            //console.log(itemsl);
+            sun=itemsl.reduce(function(a,b){
+                return a+b
+            })
+            $('#add').text('您购买的数量为：'+count+',你购买的总价为：'+sun+'.00')
+        }
+        
+        
+        
+    </script>
+</body>
+</html>
