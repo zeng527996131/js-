@@ -1,0 +1,33 @@
+function ZJ(){
+	this.value=0
+	this.init()
+}
+ZJ.prototype={
+	init(){
+		this.ocenter=document.createElement('center')
+		this.obutton_left=document.createElement('button')
+		this.obutton_right=document.createElement("button")
+		this.oinput=document.createElement("input")
+		this.obutton_left.innerText="+"
+		this.obutton_right.innerText="-"
+		this.oinput.value=0
+		this.obutton_left.addEventListener('click',this.add.bind(this))
+		this.obutton_right.addEventListener('click',this.sub.bind(this))
+		this.ocenter.appendChild(this.obutton_left)
+		this.ocenter.appendChild(this.oinput)
+		this.ocenter.appendChild(this.obutton_right)
+		document.body.appendChild(this.ocenter)
+		
+	},
+	add(){
+		this.value+=1
+		this.oinput.value=this.value;
+	},
+	sub(){
+		this.value-=1;
+		if(this.value<=0){
+			this.value=0
+		}
+		this.oinput.value=this.value;
+	}
+}
